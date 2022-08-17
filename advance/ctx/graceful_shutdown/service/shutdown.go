@@ -120,11 +120,7 @@ func (app *App) shutdown(timeoutCtx context.Context) {
 
 	}
 
-	log.Println("开始关闭服务器...")
-	// 并发关闭服务器，同时要注意协调所有的 server 都关闭之后才能步入下一个阶段
-
 	log.Println("开始执行自定义回调...")
-
 	// 并发执行回调，要注意协调所有的回调都执行完才会步入下一个阶段
 	waitGroup := sync.WaitGroup{}
 	timeoutCtx2, cancelFunc2 := context.WithTimeout(timeoutCtx, app.cbTimeout)
@@ -202,6 +198,9 @@ func (s *Server) stop() error {
 }
 
 func (s *Server) DoingClose() {
+	log.Println("开始关闭服务器...")
+	// 并发关闭服务器，同时要注意协调所有的 server 都关闭之后才能步入下一个阶段
+
 	err := s.srv.Close()
 	if err != nil {
 		log.Printf("服务器%s关闭失败", s.name)
